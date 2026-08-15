@@ -13,3 +13,10 @@ dist/
 build/
 coverage/
 *.log
+
+# next.js
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+.vercel

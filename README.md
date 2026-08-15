@@ -37,19 +37,23 @@ See [`docs/requirements.md`](docs/requirements.md) and [`docs/architecture.md`](
 - No recurring content-production requirement.
 - Do not overbuild before validating repeat usage and willingness to pay.
 
-## Suggested stack
+## Stack
 
-The exact stack is intentionally not locked yet. A sensible starting point is:
+Locked in [`docs/decisions.md`](docs/decisions.md) (ADR-001):
 
-- Responsive web frontend / PWA
-- API/backend service
-- PostgreSQL
-- Private object storage for receipts and warranty files
-- Background worker / scheduler
-- Transactional email
-- Payment processor
-- Pluggable document extraction / AI provider
+- Next.js (App Router, TypeScript) — frontend + API routes, deployed on Vercel
+- Supabase — Postgres, Auth, private object storage, row-level security
+- Claude vision API — receipt/document extraction, behind a provider interface (`src/lib/extraction`)
+- Resend — transactional email for reminders
+- Vercel Cron — reminder delivery job
+
+## Getting started
+
+1. Create a Supabase project, then in the SQL editor run the migrations in `supabase/migrations/` in order (or `supabase db push` with the CLI).
+2. Copy `.env.example` to `.env.local` and fill in the Supabase URL/keys, an `ANTHROPIC_API_KEY`, a `RESEND_API_KEY`, and a `CRON_SECRET`.
+3. `npm install && npm run dev`, then visit `http://localhost:3000`.
+4. To exercise the reminder cron locally: `curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/reminders`.
 
 ## Status
 
-Product definition / pre-MVP scaffold.
+Milestone 1 (core vertical slice) implemented — see [`docs/roadmap.md`](docs/roadmap.md). Not yet deployed; needs a live Supabase project and API keys to run end-to-end.
